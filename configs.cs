@@ -258,14 +258,19 @@ namespace Project1 {
 
         public static object parse_circle(string values) {
             var tmp = values.Split(",");
-            if (!float.TryParse(tmp[0].Trim(), out float x1)) {
-                throw new FormatException();
+            float x1 = 0f, y1 = 0f, phi = 10f;
+            if (!float.TryParse(tmp[0].Trim(), out x1)) {
+                Console.WriteLine("text: invalid data {0}", tmp[0]);
             }
-            if (!float.TryParse(tmp[1].Trim(), out float y1)) {
-                throw new FormatException();
+            if (tmp.Length < 2) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[1].Trim(), out y1)) {
+                Console.WriteLine("text: invalid data {0}", tmp[1]);
             }
-            if (!float.TryParse(tmp[2].Trim(), out float phi)) {
-                throw new FormatException();
+            if (tmp.Length < 3) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[2].Trim(), out phi)) {
+                Console.WriteLine("text: invalid data {0}", tmp[2]);
             }
             return (1, new Point((int)x1, (int)y1), phi);
         }
