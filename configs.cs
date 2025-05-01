@@ -213,7 +213,24 @@ namespace Project1 {
 
 
         public static object parse_line(string values) {
-            return null;
+            var tmp = values.Split(",");
+            if (!int.TryParse(tmp[0].Trim(), out int n)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[1].Trim(), out float x1)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[2].Trim(), out float y1)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[3].Trim(), out float x2)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[4].Trim(), out float y2)) {
+                throw new FormatException();
+            }
+            return (n, new Point((int)x1, (int)y1),
+                       new Point((int)x2, (int)y2));
         }
 
 
