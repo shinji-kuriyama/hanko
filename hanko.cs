@@ -5,10 +5,13 @@ using System.Drawing;
 
 namespace Project1 {
     public static class HankoDraw {
-        public static void draw(Graphics g, object src) {
+        public static void draw(Graphics g, object src, Func<int, string> fn) {
             if (src is ValueTuple<string, float, Point> txt) {
                 var (t, p, pt) = txt;
                 draw_text(g, t, p, pt);
+            } else if (src is ValueTuple<int, float, Point> txv) {
+                var t = fn(txv.Item1);
+                draw_text(g, t, txv.Item2, txv.Item3);
             } else if (src is ValueTuple<int, Point, float> cle) {
                 draw_circle(g, cle.Item2, cle.Item3);
             } else if (src is ValueTuple<int, Point, Point> lin) {
@@ -22,8 +25,8 @@ namespace Project1 {
         public static void draw_text(
             Graphics g, string txt, float pt, Point p
         ) {
-            var ft = new Font("", 10f);
-            var siz = g.MeasureString(txt, ft, (int)pt);
+            var ft = new Font("Arial", pt);
+            var siz = g.MeasureString(txt, ft);
             var ptf = new PointF(p.X - siz.Width / 2,
                                  p.Y - siz.Height / 2);
             g.DrawString(txt, ft, Brushes.Black, ptf);
