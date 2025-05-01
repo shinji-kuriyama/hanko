@@ -10,7 +10,7 @@ namespace Project1 {
     public class Form1: Form {
         public Form1(IEnumerable<Hanko> items) {
             Width = 125;
-            Height = 200;
+            Height = 219;
             FormBorderStyle = FormBorderStyle.FixedSingle;
 
             InitializeComponents(items);
@@ -27,16 +27,23 @@ namespace Project1 {
                 Top = 140, Left = 10, Width = 100, Height = 20,
                 Text = "Copy",
             };
-            Controls.AddRange(new Control[] {cmb, hnk, btn});
+            var dat = new DateTimePicker() {
+                Top = 165, Left = 10, Width = 100, Height = 20,
+            };
+            Controls.AddRange(new Control[] {cmb, hnk, btn,
+                                             dat
+                              });
 
             foreach (var i in items) {
                 cmb.Items.Add(i.title);
             }
             if (cmb.Items.Count > 0) {cmb.SelectedIndex = 0;}
 
+            dat.ValueChanged += (s, e) => {hnk.Invalidate();};
+
             Func<int, string> fn = (n) => {
                 if (n == 0) {
-                    return DateTime.Now.ToString("yy/MM/dd");
+                    return dat.Value.ToString("yy/MM/dd");
                 }
                 return "undefined";
             };
