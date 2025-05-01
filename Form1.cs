@@ -8,16 +8,16 @@ using System.Windows.Forms;
 
 namespace Project1 {
     public class Form1: Form {
-        public Form1(IEnumerable<Hanko> items) {
+        public Form1(Func<IEnumerable<Hanko>> items) {
             Width = 125;
-            Height = 219;
+            Height = 238;
             FormBorderStyle = FormBorderStyle.FixedSingle;
 
             InitializeComponents(items);
         }
 
 
-        public void InitializeComponents(IEnumerable<Hanko> items) {
+        public void InitializeComponents(Func<IEnumerable<Hanko>> fn_items) {
             var cmb = new ComboBox() {
                 Top = 10, Left = 10, Width = 100, Height = 20,
                 DropDownStyle = ComboBoxStyle.DropDownList,
@@ -30,16 +30,23 @@ namespace Project1 {
             var dat = new DateTimePicker() {
                 Top = 165, Left = 10, Width = 100, Height = 20,
             };
+            var btu = new Button() {
+                Top = 187, Left = 10, Width = 100, Height = 20,
+                Text = "Reload",
+            };
             Controls.AddRange(new Control[] {cmb, hnk, btn,
-                                             dat
+                                             dat, btu
                               });
 
-            foreach (var i in items) {
-                cmb.Items.Add(i.title);
-            }
-            if (cmb.Items.Count > 0) {cmb.SelectedIndex = 0;}
-
             dat.ValueChanged += (s, e) => {hnk.Invalidate();};
+
+            var items = fn_items();
+            load_items(items, cmb);
+
+            btu.Click += (s, e) => {
+                items = fn_items();
+                load_items(items, cmb);
+            };
 
             Func<int, string> fn = (n) => {
                 if (n == 0) {
@@ -60,6 +67,17 @@ namespace Project1 {
                 var h = items.ElementAt(n_hanko);
                 paint_hanko(o.Graphics, h.data, fn);
             };
+        }
+
+
+        public void load_items(IEnumerable<Hanko> items, ComboBox cmb) {
+            cmb.Items.Clear();
+            foreach (var i in items) {
+                cmb.Items.Add(i.title);
+            }
+            if (cmb.Items.Count > 0) {
+                cmb.SelectedIndex = 0;
+            }
         }
 
 
