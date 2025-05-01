@@ -226,20 +226,30 @@ namespace Project1 {
 
         public static object parse_line(string values) {
             var tmp = values.Split(",");
-            if (!int.TryParse(tmp[0].Trim(), out int n)) {
-                throw new FormatException();
+            int n = 0;
+            float x1 = 0f, y1 = 0f, x2 = 0f, y2 = 0f;
+            if (!int.TryParse(tmp[0].Trim(), out n)) {
+                Console.WriteLine("text: invalid data {0}", tmp[0]);
             }
-            if (!float.TryParse(tmp[1].Trim(), out float x1)) {
-                throw new FormatException();
+            if (tmp.Length < 2) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[1].Trim(), out x1)) {
+                Console.WriteLine("text: invalid data {0}", tmp[1]);
             }
-            if (!float.TryParse(tmp[2].Trim(), out float y1)) {
-                throw new FormatException();
+            if (tmp.Length < 3) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[2].Trim(), out y1)) {
+                Console.WriteLine("text: invalid data {0}", tmp[2]);
             }
-            if (!float.TryParse(tmp[3].Trim(), out float x2)) {
-                throw new FormatException();
+            if (tmp.Length < 4) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[3].Trim(), out x2)) {
+                Console.WriteLine("text: invalid data {0}", tmp[3]);
             }
-            if (!float.TryParse(tmp[4].Trim(), out float y2)) {
-                throw new FormatException();
+            if (tmp.Length < 4) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[4].Trim(), out y2)) {
+                Console.WriteLine("text: invalid data {0}", tmp[4]);
             }
             return (n, new Point((int)x1, (int)y1),
                        new Point((int)x2, (int)y2));
