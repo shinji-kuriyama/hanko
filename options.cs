@@ -9,10 +9,13 @@ namespace Project1 {
         public FileInfo config {get; protected set;}
 
 
+        public Options() {
+            config = new FileInfo("hanko.ini");
+        }
+
+
         public static Options parse_args(string[] args) {
-            var ret = new Options() {
-                config = new FileInfo("hanko.ini"),
-            };
+            var ret = new Options();
             foreach (var arg in args) {
                 var tmp = new FileInfo(arg);
                 if (tmp.Exists) {

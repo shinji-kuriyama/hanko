@@ -8,8 +8,8 @@ using System.Linq;
 
 namespace Project1 {
     public class Hanko {
-        public string title;
-        public object[] data;
+        public string title = "";
+        public object[] data = new object[0];
 
         public bool is_valid {get => data != null && data.Length > 0;}
 
@@ -35,7 +35,7 @@ namespace Project1 {
 
 
     public class Configs {
-        public Hanko[] hankos;
+        public Hanko[] hankos = new Hanko[0];
 
 
         public static Configs parse_configs_file(FileInfo fname) {

@@ -106,6 +106,7 @@ namespace Project1 {
         public static Hanko selected_hanko(IEnumerable<Hanko> items,
                                            ComboBox cmb
         ) {
+            if (cmb == null) {return null;}
             var n = cmb.SelectedIndex;
             if (n < 0) {return null;}
             var h = items.ElementAt(n);
