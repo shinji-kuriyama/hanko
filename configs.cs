@@ -235,7 +235,17 @@ namespace Project1 {
 
 
         public static object parse_circle(string values) {
-            return null;
+            var tmp = values.Split(",");
+            if (!float.TryParse(tmp[0].Trim(), out float x1)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[1].Trim(), out float y1)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[2].Trim(), out float phi)) {
+                throw new FormatException();
+            }
+            return (1, new Point((int)x1, (int)y1), phi);
         }
     }
 }
