@@ -206,14 +206,19 @@ namespace Project1 {
 
         public static object parse_date(string values) {
             var tmp = values.Split(",");
-            if (!float.TryParse(tmp[0].Trim(), out float pt)) {
-                throw new FormatException();
+            float pt = 10f, x = 0f, y = 0f;
+            if (!float.TryParse(tmp[0].Trim(), out pt)) {
+                Console.WriteLine("text: invalid data {0}", tmp[1]);
             }
-            if (!float.TryParse(tmp[1].Trim(), out float x)) {
-                throw new FormatException();
+            if (tmp.Length < 2) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[1].Trim(), out x)) {
+                Console.WriteLine("text: invalid data {0}", tmp[1]);
             }
-            if (!float.TryParse(tmp[2].Trim(), out float y)) {
-                throw new FormatException();
+            if (tmp.Length < 3) {
+                Console.WriteLine("text: data length  {0}", tmp.Length);
+            } else if (!float.TryParse(tmp[2].Trim(), out y)) {
+                Console.WriteLine("text: invalid data {0}", tmp[2]);
             }
             return (0, pt, new Point((int)x, (int)y));
         }
