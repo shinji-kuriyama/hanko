@@ -56,8 +56,9 @@ namespace Project1 {
                 }
                 if (hnk.is_valid) {data.Add(hnk);}
             }
+            var dat2 = expand_data(data);
             return new Configs() {
-                hankos = data.ToArray(),
+                hankos = dat2,
             };
         }
 
@@ -68,6 +69,58 @@ namespace Project1 {
                 title = t,
                 data = new object[0] {},
             };
+        }
+
+
+        public static Hanko[] expand_data(IEnumerable<Hanko> src) {
+            var ret = new List<Hanko>();
+            foreach (var i in src) {
+                if (i.title.StartsWith("_")) {continue;}
+
+                var tmp = new List<object>();
+                foreach (var j in i.data) {
+                    var (n, sec) = is_include(j);
+                    if (n != 99) {
+                        tmp.Add(j);
+                        continue;
+                    }
+                    foreach (var k in expand_include(src, n, sec)) {
+                        tmp.Add(k);
+                    }
+                }
+                i.data = tmp.ToArray();
+                ret.Add(i);
+            }
+            return ret.ToArray();
+        }
+
+
+        public static (int, string) is_include(object src) {
+            if (src is ValueTuple<int, string> inc) {
+                return inc;
+            }
+            return (0, "");
+        }
+
+
+        public static IEnumerable<object> expand_include(
+                IEnumerable<Hanko> src, int n, string sec
+        ) {
+            if (n != 99) {yield break;}
+
+            var hnk = src.Where((x) => x.title == sec);
+            if (hnk.Count() < 1) {yield break;}
+
+            foreach (var i in hnk.First().data) {
+                var (n_sub, sec_sub) = is_include(i);
+                if (n_sub != 99) {
+                    yield return i;
+                    continue;
+                }
+                foreach (var j in expand_include(src, n_sub, sec_sub)) {
+                    yield return j;
+                }
+            }
         }
 
 
