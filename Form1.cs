@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 
 namespace Project1 {
     public class Form1: Form {
-        public Form1(IEnumerable<string> items) {
+        public Form1(IEnumerable<Hanko> items) {
             Width = 125;
             Height = 200;
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -16,7 +17,7 @@ namespace Project1 {
         }
 
 
-        public void InitializeComponents(IEnumerable<string> items) {
+        public void InitializeComponents(IEnumerable<Hanko> items) {
             var cmb = new ComboBox() {
                 Top = 10, Left = 10, Width = 100, Height = 20,
                 DropDownStyle = ComboBoxStyle.DropDownList,
@@ -29,25 +30,36 @@ namespace Project1 {
             Controls.AddRange(new Control[] {cmb, hnk, btn});
 
             foreach (var i in items) {
-                cmb.Items.Add(i);
+                cmb.Items.Add(i.title);
             }
             if (cmb.Items.Count > 0) {cmb.SelectedIndex = 0;}
-        }
 
-
-        public Button create_hanko(int x, int y) {
             Func<int, string> fn = (n) => {
                 if (n == 0) {
                     return DateTime.Now.ToString("yy/MM/dd");
                 }
                 return "undefined";
             };
+
+            var n_hanko = 0;
+            cmb.SelectedIndexChanged += (s, o) => {
+                var n = (s as ComboBox).SelectedIndex;
+                if (n >= 0) {
+                    n_hanko = n;
+                    hnk.Invalidate();
+                }
+            };
+            hnk.Paint += (s, o) => {
+                var h = items.ElementAt(n_hanko);
+                paint_hanko(o.Graphics, h.data, fn);
+            };
+        }
+
+
+        public Button create_hanko(int x, int y) {
             var ret = new Button() {
                 Top = x, Left = y, Width = 100, Height = 100,
                 Enabled = false,
-            };
-            ret.Paint += (s, o) => {
-                paint_hanko(o.Graphics, TestData.test1(), fn);
             };
             return ret;
         }

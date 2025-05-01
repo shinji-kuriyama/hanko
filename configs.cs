@@ -45,13 +45,6 @@ namespace Project1 {
                 hankos = data.ToArray(),
             };
         }
-
-
-        public IEnumerable<string> get_items() {
-            foreach (var i in hankos) {
-                yield return i.title;
-            }
-        }
     }
 }
 

@@ -9,7 +9,7 @@ namespace Project1 {
             var opts = Options.parse_args(args);
             var cfgs = Configs.parse_configs_file(opts.config);
 
-            Application.Run(new Form1(cfgs.get_items()));
+            Application.Run(new Form1(cfgs.hankos));
             return 0;
         }
     }
