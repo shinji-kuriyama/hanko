@@ -1,5 +1,6 @@
 // License: MIT, see the LICENSE file for details.
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 
@@ -15,9 +16,7 @@ namespace Project1 {
                 Top = 10, Left = 10, Width = 100, Height = 20,
                 DropDownStyle = ComboBoxStyle.DropDownList,
             };
-            var hnk = new Button() {
-                Top = 35, Left = 10, Width = 100, Height = 100,
-            };
+            var hnk = create_hanko(35, 10);
             var btn = new Button() {
                 Top = 140, Left = 10, Width = 100, Height = 20,
                 Text = "Copy",
@@ -30,6 +29,31 @@ namespace Project1 {
             foreach (var i in items) {
                 cmb.Items.Add(i);
             }
+            if (cmb.Items.Count > 0) {cmb.SelectedIndex = 0;}
+        }
+
+
+        public Button create_hanko(int x, int y) {
+            var ret = new Button() {
+                Top = x, Left = y, Width = 100, Height = 100,
+                Enabled = false,
+            };
+            ret.Paint += (s, o) => {
+                paint_hanko(o.Graphics, (object[])null);
+            };
+            return ret;
+        }
+
+
+        public static void paint_hanko(Graphics g, object[] data) {
+            g.FillRectangle(Brushes.White, 0, 0, 100, 100);
+
+            var p = new Pen(Brushes.Black) {
+                Width = 2.0f,
+            };
+            g.DrawLine(p, 6, 37, 94, 37);
+            g.DrawLine(p, 6, 63, 94, 63);
+            g.DrawEllipse(p, 5, 5, 90, 90);
         }
     }
 }
