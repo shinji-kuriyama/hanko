@@ -131,13 +131,13 @@ namespace Project1 {
 
         public static object parse_text(string values) {
             var tmp = values.Split(",");
-            if (!float.TryParse(tmp[1], out float pt)) {
+            if (!float.TryParse(tmp[1].Trim(), out float pt)) {
                 throw new FormatException();
             }
-            if (!float.TryParse(tmp[2], out float x)) {
+            if (!float.TryParse(tmp[2].Trim(), out float x)) {
                 throw new FormatException();
             }
-            if (!float.TryParse(tmp[3], out float y)) {
+            if (!float.TryParse(tmp[3].Trim(), out float y)) {
                 throw new FormatException();
             }
             return (tmp[0].Trim(), pt, new Point((int)x, (int)y));
@@ -145,7 +145,17 @@ namespace Project1 {
 
 
         public static object parse_date(string values) {
-            return null;
+            var tmp = values.Split(",");
+            if (!float.TryParse(tmp[0].Trim(), out float pt)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[1].Trim(), out float x)) {
+                throw new FormatException();
+            }
+            if (!float.TryParse(tmp[2].Trim(), out float y)) {
+                throw new FormatException();
+            }
+            return (0, pt, new Point((int)x, (int)y));
         }
 
 
