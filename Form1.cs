@@ -48,18 +48,12 @@ namespace Project1 {
             var items = fn_items();
 
             cmb.SelectedIndexChanged += (s, o) => {
-                var n = (s as ComboBox).SelectedIndex;
-                if (n >= 0) {
-                    var h = items.ElementAt(n);
-                    update_hanko(hnk, h, fn);
-                }
+                var h = selected_hanko(items, s as ComboBox);
+                update_hanko(hnk, h, fn);
             };
             dat.ValueChanged += (s, e) => {
-                var n = cmb.SelectedIndex;
-                if (n >= 0) {
-                    var h = items.ElementAt(n);
-                    update_hanko(hnk, h, fn);
-                }
+                var h = selected_hanko(items, cmb);
+                update_hanko(hnk, h, fn);
             };
 
             load_items(items, cmb);
@@ -67,6 +61,13 @@ namespace Project1 {
             btu.Click += (s, e) => {
                 items = fn_items();
                 load_items(items, cmb);
+            };
+            btn.Click += (s, e) => {
+                var bmp = hnk.Image as Bitmap;
+                if (copy_image(bmp)) {return;}
+                var h = selected_hanko(items, cmb);
+                if (h == null) {return;}
+                Console.WriteLine("hanko({0}) was copied!", h.title);
             };
         }
 
@@ -102,6 +103,16 @@ namespace Project1 {
         }
 
 
+        public static Hanko selected_hanko(IEnumerable<Hanko> items,
+                                           ComboBox cmb
+        ) {
+            var n = cmb.SelectedIndex;
+            if (n < 0) {return null;}
+            var h = items.ElementAt(n);
+            return h;
+        }
+
+
         public static void update_hanko(PictureBox hnk,
                                         Hanko h, Func<int, string> fn
         ) {
@@ -109,6 +120,19 @@ namespace Project1 {
             var g = Graphics.FromImage(bmp);
             paint_hanko(g, h.data, fn);
             hnk.Image = bmp;
+            if (copy_image(bmp)) {return;}
+            Console.WriteLine("hanko({0}) was copied!", h.title);
+        }
+
+
+        public static bool copy_image(Bitmap bmp) {
+            if (bmp == null) {
+                Console.WriteLine("failed to copy_image...");
+                return true;
+            }
+            Clipboard.Clear();
+            Clipboard.SetImage(bmp);
+            return false;
         }
     }
 }
