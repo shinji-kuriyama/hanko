@@ -1,2 +1,5 @@
 .tmp
+/bin
+/hanko.csproj.user
 /hanko.exe
+/obj

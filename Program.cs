@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace Project1 {
     public static class Program {
+        [STAThread]
         public static int Main(string[] args) {
             var opts = Options.parse_args(args);
 
