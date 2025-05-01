@@ -39,7 +39,7 @@ namespace Project1 {
                 Enabled = false,
             };
             ret.Paint += (s, o) => {
-                paint_hanko(o.Graphics, (object[])null);
+                paint_hanko(o.Graphics, TestData.test1());
             };
             return ret;
         }
@@ -48,12 +48,10 @@ namespace Project1 {
         public static void paint_hanko(Graphics g, object[] data) {
             g.FillRectangle(Brushes.White, 0, 0, 100, 100);
 
-            var p = new Pen(Brushes.Black) {
-                Width = 2.0f,
-            };
-            g.DrawLine(p, 6, 37, 94, 37);
-            g.DrawLine(p, 6, 63, 94, 63);
-            g.DrawEllipse(p, 5, 5, 90, 90);
+            if (data == null) {return;}
+            foreach (var i in data) {
+                HankoDraw.draw(g, i);
+            }
         }
     }
 }

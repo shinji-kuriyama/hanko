@@ -7,6 +7,7 @@ bin:=hanko.exe
 src:=Program.cs \
      Form1.cs \
      configs.cs \
+     hanko.cs \
      options.cs \
      testdata.cs \
 

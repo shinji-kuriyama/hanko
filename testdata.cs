@@ -20,9 +20,9 @@ namespace Project1 {
 
         public static object[] test1() {
             return new object[] {
-                (1, new Point(100, 100), 80f),
-                (2, new Point(5, 50), new Point(95, 50)),
-                (2, new Point(5, 70), new Point(95, 70)),
+                (1, new Point(50, 50), 45f),
+                (2, new Point(6, 37), new Point(94, 37)),
+                (2, new Point(6, 63), new Point(94, 63)),
                 ("Test office", 10f, new Point(50, 30)),
                 (0, 10f, new Point(50, 50)),
                 ("No Hanko", 10f, new Point(50, 80)),
