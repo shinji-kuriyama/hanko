@@ -38,16 +38,6 @@ namespace Project1 {
                                              dat, btu
                               });
 
-            dat.ValueChanged += (s, e) => {hnk.Invalidate();};
-
-            var items = fn_items();
-            load_items(items, cmb);
-
-            btu.Click += (s, e) => {
-                items = fn_items();
-                load_items(items, cmb);
-            };
-
             Func<int, string> fn = (n) => {
                 if (n == 0) {
                     return dat.Value.ToString("yy/MM/dd");
@@ -55,17 +45,28 @@ namespace Project1 {
                 return "undefined";
             };
 
-            var n_hanko = 0;
+            var items = fn_items();
+
             cmb.SelectedIndexChanged += (s, o) => {
                 var n = (s as ComboBox).SelectedIndex;
                 if (n >= 0) {
-                    n_hanko = n;
-                    hnk.Invalidate();
+                    var h = items.ElementAt(n);
+                    update_hanko(hnk, h, fn);
                 }
             };
-            hnk.Paint += (s, o) => {
-                var h = items.ElementAt(n_hanko);
-                paint_hanko(o.Graphics, h.data, fn);
+            dat.ValueChanged += (s, e) => {
+                var n = cmb.SelectedIndex;
+                if (n >= 0) {
+                    var h = items.ElementAt(n);
+                    update_hanko(hnk, h, fn);
+                }
+            };
+
+            load_items(items, cmb);
+
+            btu.Click += (s, e) => {
+                items = fn_items();
+                load_items(items, cmb);
             };
         }
 
@@ -81,10 +82,9 @@ namespace Project1 {
         }
 
 
-        public Button create_hanko(int x, int y) {
-            var ret = new Button() {
+        public PictureBox create_hanko(int x, int y) {
+            var ret = new PictureBox() {
                 Top = x, Left = y, Width = 100, Height = 100,
-                Enabled = false,
             };
             return ret;
         }
@@ -99,6 +99,16 @@ namespace Project1 {
             foreach (var i in data) {
                 HankoDraw.draw(g, i, fn);
             }
+        }
+
+
+        public static void update_hanko(PictureBox hnk,
+                                        Hanko h, Func<int, string> fn
+        ) {
+            var bmp = new Bitmap(100, 100);
+            var g = Graphics.FromImage(bmp);
+            paint_hanko(g, h.data, fn);
+            hnk.Image = bmp;
         }
     }
 }
