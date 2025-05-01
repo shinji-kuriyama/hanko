@@ -3,11 +3,15 @@ license:
 	cat LICENSE
 
 
+bin:=hanko.exe
 src:=Program.cs \
      Form1.cs \
+     options.cs \
 
 cs_flags:=-r:System.Windows.Forms.dll \
 
-hanko.exe: $(src)
+run: $(bin)
+	./$<
+$(bin): $(src)
 	mono-csc -out:$@ $(cs_flags) $^
 
