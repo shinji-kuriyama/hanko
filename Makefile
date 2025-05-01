@@ -16,7 +16,7 @@ cs_flags:=-r:System.Windows.Forms.dll \
           -r:WindowsBase.dll \
 
 run: $(bin)
-	./$<
+	./$< $(args)
 $(bin): $(src)
 	mono-csc -out:$@ $(cs_flags) $^
 

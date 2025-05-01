@@ -13,6 +13,13 @@ namespace Project1 {
             var ret = new Options() {
                 config = new FileInfo("hanko.ini"),
             };
+            foreach (var arg in args) {
+                var tmp = new FileInfo(arg);
+                if (tmp.Exists) {
+                    Console.WriteLine("the config file specified: {0}", arg);
+                    ret.config = tmp;
+                }
+            }
             return ret;
         }
     }
