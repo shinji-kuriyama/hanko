@@ -10,8 +10,14 @@ namespace Project1 {
     public class Form1: Form {
         public Form1(Func<IEnumerable<Hanko>> items) {
             Width = 125;
+            #if NET9_0_OR_GREATER
+            Height = 253;
+            #else
             Height = 238;
+            #endif
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            MinimizeBox = false;
+            MaximizeBox = false;
 
             InitializeComponents(items);
         }
