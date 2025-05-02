@@ -15,4 +15,9 @@
     <PublishReadyToRun>true</PublishReadyToRun-->
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="hanko.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
