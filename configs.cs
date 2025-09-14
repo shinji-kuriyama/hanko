@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+
+
+using Parsers = System.Collections.Generic.Dictionary<string,
+                    System.Func<string, object>>;
 
 
 namespace Project1 {
@@ -12,6 +17,10 @@ namespace Project1 {
         public object[] data = new object[0];
 
         public bool is_valid {get => data != null && data.Length > 0;}
+
+        /// <summary> the cache of parser functions,
+        /// see `get_parsers` for details </summary>
+        public static Parsers parsers = null;
 
 
         public bool parse(string line) {
@@ -22,7 +31,8 @@ namespace Project1 {
             if (Configs.is_section(line)) {
                 return true;
             }
-            var inst = Configs.parse_statement(line);
+            var p = get_parsers();
+            var inst = Configs.parse_statement(p, line);
             if (inst == null) {
                 return false;
             }
@@ -30,6 +40,31 @@ namespace Project1 {
             tmp.Add(inst);
             data = tmp.ToArray();
             return false;
+        }
+
+
+        /// <summary> collect parsers  </summary>
+        public static Parsers get_parsers(Assembly assm = null) {
+            if (parsers != null) {return parsers;}
+            assm = assm ?? Assembly.GetExecutingAssembly();
+            parsers = new Parsers();
+            foreach (var cls in assm.GetTypes()) {
+                if (!cls.IsClass) {continue;}
+                if (!cls.GetFields().Any(x => x.Name == "typename")) {continue;}
+                var typ = cls.GetField("typename")?.GetValue(null) as string;
+                if (!cls.Name.StartsWith("Draw")) {continue;}
+                foreach (var i in cls.GetMethods()) {
+                    if (!i.IsStatic) {continue;}
+                    if (i.ReturnType != typeof(object)) {continue;}
+                    var prms = i.GetParameters();
+                    if (prms.Length != 1) {continue;}
+                    if (prms[0].ParameterType != typeof(string)) {continue;}
+                    parsers.Add(
+                        typ ?? "", (Func<string, object>)i.CreateDelegate(
+                            typeof(Func<string, object>), null));
+                }
+            }
+            return parsers;
         }
     }
 
@@ -152,18 +187,24 @@ namespace Project1 {
         }
 
 
-        public static object parse_statement(string src) {
+        public static object parse_statement(Parsers p, string src) {
             if (!src.Contains("=")) {
                 return null;
             }
             var l_and_r = src.Split('=');
             var typ = l_and_r[0].Trim();
             var val = string.Join('=', l_and_r.Skip(1)).Trim();
-            return parse_values(typ, val);
+            return parse_values(p, typ, val);
         }
 
 
-        public static object parse_values(string typ, string values) {
+        /// <param name="p">Parsers are functions to parse the
+        /// input string. </param>
+        public static object parse_values(Parsers p,
+                                          string typ, string values) {
+            if (p.ContainsKey(typ)) {
+                return p[typ](values);
+            }
             switch (typ) {
             case "text":    return parse_text(values);
             case "date":    return parse_date(values);

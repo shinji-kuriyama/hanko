@@ -1,11 +1,26 @@
 // License: MIT, see the LICENSE file for details.
 using System;
 using System.Drawing;
+using System.Reflection;
+
+using fn_text = System.Func<int, string>;
+using fn_draw = System.Func<System.Drawing.Graphics,
+                            object, System.Func<int, string>, bool>;
+using Draws = System.Collections.Generic.List<
+                    System.Func<System.Drawing.Graphics,
+                                object, System.Func<int, string>, bool>>;
 
 
 namespace Project1 {
     public static class HankoDraw {
-        public static void draw(Graphics g, object src, Func<int, string> fn) {
+        /// <summary> functions to draw the hanko part </summary>
+        public static Draws draws = null;
+
+
+        public static void draw(Graphics g, object src, fn_text fn) {
+            foreach (var i in collect_draws()) {
+                if (i(g, src, fn)) {return;}
+            }
             if (src is ValueTuple<string, float, Point> txt) {
                 var (t, p, pt) = txt;
                 draw_text(g, t, p, pt);
@@ -19,6 +34,33 @@ namespace Project1 {
             } else {
                 new NotImplementedException();
             }
+        }
+
+
+        /// <summary> collect drawing functions </summary>
+        public static Draws collect_draws(Assembly assm = null) {
+            if (draws != null) {return draws;}
+
+            assm = assm ?? Assembly.GetExecutingAssembly();
+            var d = new Draws();
+            foreach (var cls in assm.GetTypes()) {
+                if (!cls.IsClass) {continue;}
+                if (!cls.GetFields().Any(x => x.Name == "typename")) {continue;}
+                var typ = cls.GetField("typename")?.GetValue(null) as string;
+                if (!cls.Name.StartsWith("Draw")) {continue;}
+                foreach (var i in cls.GetMethods()) {
+                    if (!i.IsStatic) {continue;}
+                    if (i.ReturnType != typeof(bool)) {continue;}
+                    var prms = i.GetParameters();
+                    if (prms.Length != 3) {continue;}
+                    if (prms[0].ParameterType != typeof(Graphics)) {continue;}
+                    if (prms[1].ParameterType != typeof(object)) {continue;}
+                    if (prms[2].ParameterType != typeof(fn_text)) {continue;}
+                    d.Add((fn_draw)i.CreateDelegate(typeof(fn_draw), null));
+                }
+            }
+            draws = d;
+            return d;
         }
 
 
