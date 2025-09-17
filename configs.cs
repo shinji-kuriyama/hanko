@@ -24,7 +24,6 @@ namespace Project1 {
 
 
         public bool parse(string line) {
-            line = Configs.trim_comments(line);
             if (line.Length < 1) {
                 return false;
             }
@@ -83,6 +82,7 @@ namespace Project1 {
                 var hnk = new Hanko() {title = "", data = new object[0]};
                 var line = sr.ReadLine();
                 while (line != null) {
+                    line = Configs.trim_comments(line);
                     if (hnk.parse(line)) {
                         if (hnk.title.Length > 0) {data.Add(hnk);}
                         hnk = move_to_next(line);
@@ -159,16 +159,39 @@ namespace Project1 {
         }
 
 
+        /// <summary> trim comments in the line </summary>
         public static string trim_comments(string src) {
             src = src.Trim();
             if (src.StartsWith("#")) {return "";}
-            if (!src.Contains(";") &&
-                !src.Contains("#")) {return src;}
-            var ret = "";
-            foreach (var ch in src.Reverse()) {
-                ret = ch + ret;
+
+            var (f_escape, f_quote, tmp) = (false, false,
+                                            new List<string>() {""});
+
+            void add_ch(char c) {tmp[tmp.Count - 1] += c;}
+
+            foreach (var ch in src) {
+                if (f_escape) {
+                    add_ch(ch); f_escape = false;
+                    continue;
+                }
+                if (f_quote) {
+                    switch (ch) {
+                    case '\\': f_escape = true; break;
+                    case '"': f_quote = false; tmp.Add(""); break;
+                    default:  add_ch(ch); break;
+                    }
+                    continue;
+                }
+                switch (ch) {
+                case '#': break;
+                case ';': break;
+                case '"':  f_quote = true;  continue;
+                case '\\': f_escape = true; continue;
+                default: add_ch(ch);  continue;
+                }
+                break;  // ignore after comment char.
             }
-            return ret;
+            return string.Concat(tmp);
         }
 
 
@@ -180,7 +203,9 @@ namespace Project1 {
         }
 
 
+        /// <summary> parse the section line to its name </summary>
         public static string parse_section(string src) {
+            src = src.Trim();
             src = src.Substring(1, src.Length - 2);
             src = src.Trim();
             return src;
