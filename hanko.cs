@@ -3,12 +3,12 @@ using System;
 using System.Drawing;
 using System.Reflection;
 
-using fn_text = System.Func<int, string>;
+using fn_datetime = System.Func<System.DateTime>;
 using fn_draw = System.Func<System.Drawing.Graphics,
-                            object, System.Func<int, string>, bool>;
+                            object, System.Func<System.DateTime>, bool>;
 using Draws = System.Collections.Generic.List<
                     System.Func<System.Drawing.Graphics,
-                                object, System.Func<int, string>, bool>>;
+                                object, System.Func<System.DateTime>, bool>>;
 
 
 namespace Project1 {
@@ -17,16 +17,13 @@ namespace Project1 {
         public static Draws draws = null;
 
 
-        public static void draw(Graphics g, object src, fn_text fn) {
+        public static void draw(Graphics g, object src, fn_datetime fn) {
             foreach (var i in collect_draws()) {
                 if (i(g, src, fn)) {return;}
             }
             if (src is ValueTuple<string, float, Point> txt) {
                 var (t, p, pt) = txt;
                 draw_text(g, t, p, pt);
-            } else if (src is ValueTuple<int, float, Point> txv) {
-                var t = fn(txv.Item1);
-                draw_text(g, t, txv.Item2, txv.Item3);
             } else if (src is ValueTuple<int, Point, float> cle) {
                 draw_circle(g, cle.Item2, cle.Item3);
             } else if (src is ValueTuple<int, Point, Point> lin) {
@@ -55,7 +52,7 @@ namespace Project1 {
                     if (prms.Length != 3) {continue;}
                     if (prms[0].ParameterType != typeof(Graphics)) {continue;}
                     if (prms[1].ParameterType != typeof(object)) {continue;}
-                    if (prms[2].ParameterType != typeof(fn_text)) {continue;}
+                    if (prms[2].ParameterType != typeof(fn_datetime)) {continue;}
                     d.Add((fn_draw)i.CreateDelegate(typeof(fn_draw), null));
                 }
             }

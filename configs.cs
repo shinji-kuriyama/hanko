@@ -207,7 +207,6 @@ namespace Project1 {
             }
             switch (typ) {
             case "text":    return parse_text(values);
-            case "date":    return parse_date(values);
             case "line":    return parse_line(values);
             case "circle":  return parse_circle(values);
             case "include": return parse_include(values);
@@ -242,26 +241,6 @@ namespace Project1 {
                 Console.WriteLine("text: invalid data {0}", tmp[3]);
             }
             return (tmp[0].Trim(), pt, new Point((int)x, (int)y));
-        }
-
-
-        public static object parse_date(string values) {
-            var tmp = values.Split(",");
-            float pt = 10f, x = 0f, y = 0f;
-            if (!float.TryParse(tmp[0].Trim(), out pt)) {
-                Console.WriteLine("text: invalid data {0}", tmp[1]);
-            }
-            if (tmp.Length < 2) {
-                Console.WriteLine("text: data length  {0}", tmp.Length);
-            } else if (!float.TryParse(tmp[1].Trim(), out x)) {
-                Console.WriteLine("text: invalid data {0}", tmp[1]);
-            }
-            if (tmp.Length < 3) {
-                Console.WriteLine("text: data length  {0}", tmp.Length);
-            } else if (!float.TryParse(tmp[2].Trim(), out y)) {
-                Console.WriteLine("text: invalid data {0}", tmp[2]);
-            }
-            return (0, pt, new Point((int)x, (int)y));
         }
 
 

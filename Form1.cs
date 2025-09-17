@@ -44,11 +44,8 @@ namespace Project1 {
                                              dat, btu
                               });
 
-            Func<int, string> fn = (n) => {
-                if (n == 0) {
-                    return dat.Value.ToString("yy/MM/dd");
-                }
-                return "undefined";
+            Func<DateTime> fn = () => {
+                return dat.Value;
             };
 
             var items = fn_items();
@@ -98,7 +95,7 @@ namespace Project1 {
 
 
         public static void paint_hanko(
-                Graphics g, object[] data, Func<int, string> fn
+                Graphics g, object[] data, Func<DateTime> fn
         ) {
             g.FillRectangle(Brushes.White, 0, 0, 100, 100);
 
@@ -121,7 +118,7 @@ namespace Project1 {
 
 
         public static void update_hanko(PictureBox hnk,
-                                        Hanko h, Func<int, string> fn
+                                        Hanko h, Func<DateTime> fn
         ) {
             var bmp = new Bitmap(100, 100);
             var g = Graphics.FromImage(bmp);
